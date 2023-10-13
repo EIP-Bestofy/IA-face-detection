@@ -1,12 +1,11 @@
 import numpy as np
 import cv2 as cv
-from src.detect_face import FaceDetector
 from src.detect_landmarks import LandmarksDetector
+from src.detect_emotion import detect_emotion
 
 class VideoProcessing:
     def __init__(self):
         self.landmarks_detector = LandmarksDetector()
-        self.face_detector = FaceDetector()
 
     def process_video(self, video_path, type):
         video_capture = cv.VideoCapture(video_path)
@@ -21,12 +20,13 @@ class VideoProcessing:
 
     def process_capture(self, video_capture, type):
         read_status, frame = video_capture.read()
+        (ih,iw) = frame.shape[:2] 
         print("Start processing the video")
 
         while read_status:
 
             frame = self.process_frame(frame, type)
-
+            frame = cv.resize(frame, (1280, 720), interpolation=cv.INTER_LINEAR)
             cv.imshow("Bestofy", frame)
             read_status, frame = video_capture.read()
 
@@ -39,11 +39,8 @@ class VideoProcessing:
 
     def process_frame(self, frame, type):
         if type == "face":
-            small_frame = cv.resize(frame, (0, 0), fx=0.5, fy=0.5)
-            face_locations = self.face_detector.detect_face(small_frame)
-            frame = self.face_detector.draw_square_at_locations(face_locations, frame)
+            return detect_emotion(frame)
         elif type == "landmarks":
             landmarks = self.landmarks_detector.detect_landmarks(frame)
-            frame = self.landmarks_detector.draw_landmarks(landmarks, frame, True)
+            self.landmarks_detector.draw_landmarks(landmarks, frame, True)
 
-        return frame
