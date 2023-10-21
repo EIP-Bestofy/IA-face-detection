@@ -20,9 +20,9 @@ class Cluster:
 
         
     def choose_cluster(self, x_location, y_location):
-        for idx, cluster in self.info_array:
-            mean_x = sum([cluster[0] for cluster in self.info_array]) / len(self.info_array)
-            mean_y = sum([cluster[1] for cluster in self.info_array]) / len(self.info_array)
+        for idx, cluster in enumerate(self.info_array):
+            mean_x = sum([c[0] for c in cluster]) / len(cluster)
+            mean_y = sum([c[1] for c in cluster]) / len(cluster)
             # In the mean, return the index
             if ((x_location < (mean_x + 50) and x_location > (mean_x - 50))
                 and y_location < (mean_y + 50) and y_location > (mean_y - 50)):

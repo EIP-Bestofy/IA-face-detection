@@ -3,6 +3,7 @@ import numpy as np
 import tensorflow as tf
 from src.detect_face import Detect_face
 from src.display_info import Display_Info
+from src.face_emotion_cluster import Cluster
 
 
 class Detect_Emotion():
@@ -11,6 +12,7 @@ class Detect_Emotion():
         self.dictionnary = ['Surprise', 'Neutral', 'Anger', 'Happy', 'Sad']
         self.display_emotion = Display_Info()
         self.detect_face = Detect_face()
+        self.cluster = Cluster()
         
     def detect(self, frame):
         face_locations = self.detect_face.detect(frame)
@@ -43,3 +45,25 @@ class Detect_Emotion():
     
     def display_info(self, emotions, locations, frame):
         return self.display_emotion.display(emotions, locations, frame)
+
+    def print_cluster_info(self):
+        clusters = self.cluster.get_info_array()
+        print("Start Display Cluster INFO")
+        for idx, cluster in enumerate(clusters):
+            np_cluster = np.array(cluster)
+            np_cluster_pos = np_cluster[:, :2].astype(float).astype(int)
+            np_cluster_emo = np.array(np_cluster[:, 2])
+
+            means = np.mean(np_cluster_pos[:, :2], axis=0)
+            x_mean = int(round(means[0]))
+            y_mean = int(round(means[1]))
+            print("Cluster", idx, ": Mean X", x_mean, "Mean Y", y_mean)
+
+            unique_emos, counts = np.unique(np_cluster_emo, return_counts=True)
+            percentages = np.around(counts / np_cluster_emo.size * 100, 1)
+            emotion_percentages = dict(zip(unique_emos, percentages))
+            print("\t", emotion_percentages)
+
+
+    def add_info_cluster(self, emotions_states, locations):
+        self.cluster.face_emotion_cluster(emotions_states, locations)
