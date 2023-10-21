@@ -3,12 +3,12 @@ import cv2 as cv
 from PIL import Image, ImageDraw
 import numpy as np
 
-class LandmarksDetector:
-    def detect_landmarks(self, frame_small):
+class Detect_Landmarks:
+    def detect(self, frame_small):
         face_landmarks_list = face_recognition.face_landmarks(frame_small)
         return face_landmarks_list
 
-    def draw_landmarks(self, face_landmarks_list, frame, details):
+    def draw(self, face_landmarks_list, frame, details):
         # Create a PIL imagedraw object so we can draw on the picture
         pil_frame = Image.fromarray(frame)
         d = ImageDraw.Draw(pil_frame)
