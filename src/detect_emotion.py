@@ -13,12 +13,18 @@ class Detect_Emotion():
         self.display_emotion = Display_Info()
         self.detect_face = Detect_face()
         self.cluster = Cluster()
+        self.count_detection_face = 0
+        self.count_detection_attempt = 0
         
     def detect(self, frame):
-        face_locations = self.detect_face.detect(frame)
         locations = []
         emotions_states = []
+        self.count_detection_attempt += 1
+
+        face_locations = self.detect_face.detect(frame)
         for top, right, bottom, left in face_locations:
+            self.count_detection_face += 1
+            
             # Scale back up face locations since the frame we detected in was scaled
             top *= 2
             right *= 2
@@ -47,6 +53,8 @@ class Detect_Emotion():
         return self.display_emotion.display(emotions, locations, frame)
 
     def print_cluster_info(self):
+        print(self.count_detection_face)
+        print(self.count_detection_attempt)
         clusters = self.cluster.get_info_array()
         print("Start Display Cluster INFO")
         for idx, cluster in enumerate(clusters):
@@ -54,15 +62,27 @@ class Detect_Emotion():
             np_cluster_pos = np_cluster[:, :2].astype(float).astype(int)
             np_cluster_emo = np.array(np_cluster[:, 2])
 
+            # percentage detction between every cluster
+            percentage_detectin_face = np.around((np_cluster.shape[0] * 100) / self.count_detection_face, 1)
+            # percentage detection over every detection attempt
+            percentage_detection_attempt = np.around((np_cluster.shape[0] * 100) / self.count_detection_attempt, 1)
+
+            # Mean of the position of the first cluster
             means = np.mean(np_cluster_pos[:, :2], axis=0)
             x_mean = int(round(means[0]))
             y_mean = int(round(means[1]))
-            print("Cluster", idx, ": Mean X", x_mean, "Mean Y", y_mean)
+            
 
+            # Pourcentage of each emotions detected
             unique_emos, counts = np.unique(np_cluster_emo, return_counts=True)
             percentages = np.around(counts / np_cluster_emo.size * 100, 1)
             emotion_percentages = dict(zip(unique_emos, percentages))
-            print("\t", emotion_percentages)
+
+            print("Cluster", idx, ":")
+            print("\tPercentage detection over every attempt", percentage_detection_attempt)
+            print("\tPercentage detection over every face", percentage_detectin_face)
+            print("\tMean X", x_mean, "Mean Y", y_mean)
+            print("\tPercentage emotions detected", emotion_percentages)
 
 
     def add_info_cluster(self, emotions_states, locations):

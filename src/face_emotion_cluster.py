@@ -3,6 +3,7 @@ import numpy as np
 class Cluster: 
     def __init__(self):
         self.info_array = []
+        
 
     def face_emotion_cluster(self, emotions, locations):
         for emotion, location in zip(emotions, locations):
