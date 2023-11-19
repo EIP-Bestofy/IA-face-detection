@@ -39,6 +39,8 @@ class VideoProcessing:
 
     def process_frame(self, frame, type):
         states_location, locations = self.emotion_detection.detect(frame)
-        return self.emotion_detection.display_info(states_location, locations, frame)
+        frame = self.emotion_detection.display_info(states_location, locations, frame)
+        self.emotion_detection.check_player_emotion(states_location)
+        return frame 
 
 

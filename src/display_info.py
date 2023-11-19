@@ -14,3 +14,14 @@ def display_informations(emotions, locations, frame):
             (255, 255, 255), 1,
             cv.LINE_AA)
     return frame
+
+def display_instructions(frame, sentence, emotion_to_detect):
+    frame = cv.putText(frame, f"Situation: {sentence}", (20, 20),
+        cv.FONT_HERSHEY_SIMPLEX, 0.7,
+        (0, 0, 0), 1,
+        cv.LINE_AA)
+    frame = cv.putText(frame, f"Emotion to detect: {emotion_to_detect}", (20, 40),
+        cv.FONT_HERSHEY_SIMPLEX, 0.7,
+        (0, 0, 0), 1,
+        cv.LINE_AA)
+    return frame
