@@ -1,11 +1,9 @@
 import numpy as np
 import cv2 as cv
-from src.detect_landmarks import Detect_Landmarks
 from src.detect_emotion import Detect_Emotion
 
 class VideoProcessing:
     def __init__(self):
-        self.landmarks_detection = Detect_Landmarks()
         self.emotion_detection = Detect_Emotion()
 
 
@@ -46,11 +44,8 @@ class VideoProcessing:
         print("End processing the video")
 
     def process_frame(self, frame, type):
-        if type == "face":
-            states_location, locations = self.emotion_detection.detect(frame)
-            self.emotion_detection.add_info_cluster(states_location, locations)
-            return self.emotion_detection.display_info(states_location, locations, frame)
-        elif type == "landmarks":
-            landmarks = self.landmarks_detection.detect_landmarks(frame)
-            self.landmarks_detection.draw_landmarks(landmarks, frame, True)
+        states_location, locations = self.emotion_detection.detect(frame)
+        self.emotion_detection.add_info_cluster(states_location, locations)
+        return self.emotion_detection.display_info(states_location, locations, frame)
+
 

@@ -7,6 +7,8 @@ from src.face_emotion_cluster import Cluster
 
 
 class Detect_Emotion():
+
+    
     def __init__(self):
         self.model = tf.keras.models.load_model('models/emotion_detection/emotion_modelv2.h5')
         self.dictionnary = ['Surprise', 'Neutral', 'Anger', 'Happy', 'Sad']
