@@ -19,33 +19,26 @@ class VideoProcessing:
         cv.destroyAllWindows()
 
     def process_capture(self, video_capture, type):
-        read_status, frame = video_capture.read()
-        (ih,iw) = frame.shape[:2] 
-        print("Start processing the video")
 
-        frame_count = 0  # Initialize the frame counter
+        while True:
+            ret, frame = video_capture.read()
 
-        while read_status:
-            frame_count += 1  # Increment the frame counter
-
-            if frame_count % 10 == 0:  # Check if it's the 10th frame
-                frame = self.process_frame(frame, type)
-
+            frame = self.process_frame(frame, type)
             frame = cv.resize(frame, (1280, 720), interpolation=cv.INTER_LINEAR)
             cv.imshow("Bestofy", frame)
-            read_status, frame = video_capture.read()
 
+
+            if not ret:
+                break
             # Stop the video processing
             key = cv.waitKey(1) & 0xFF
             if ord("q") == key:
                 break
         
-        self.emotion_detection.print_cluster_info()
         print("End processing the video")
 
     def process_frame(self, frame, type):
         states_location, locations = self.emotion_detection.detect(frame)
-        self.emotion_detection.add_info_cluster(states_location, locations)
         return self.emotion_detection.display_info(states_location, locations, frame)
 
 
